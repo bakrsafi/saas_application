@@ -1,0 +1,159 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>تطبيق عرض الغرف</title>
+
+  <!-- أيقونات وخطوط -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet" />
+
+  <!-- Vue 3 -->
+  <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+
+  <!-- ملف CSS الخاص بك -->
+  <link rel="stylesheet" href="{% static 'css/StyleProjects.css' %}" />
+  </head>
+<body>
+  <div id="app">
+    <div class="page">
+      <!-- الصورة + كانفاس -->
+      <div class="left-section">
+        <div class="image-wrapper">
+          <img ref="imageRef" src="{% static 'images/pxbee_2025-09-18_23-28-10 (2).jpeg' %}" />
+          <!-- هون فور للاحداثيات  -->
+          <div class="window" data-id="1" data-vertices='[
+    {"xRatio":0.4822,"yRatio":0.4404},
+    {"xRatio":0.5066,"yRatio":0.4300},
+    {"xRatio":0.5066,"yRatio":0.5077},
+    {"xRatio":0.4844,"yRatio":0.5181}
+  ]'></div>
+
+          <div class="window" data-id="2" data-vertices='[
+    {"xRatio":0.60,"yRatio":0.30},
+    {"xRatio":0.65,"yRatio":0.30},
+    {"xRatio":0.65,"yRatio":0.38},
+    {"xRatio":0.60,"yRatio":0.38}
+  ]'></div>
+          <canvas ref="canvasRef" class="overlay" @click="handleClick"
+            @wheel.prevent="zoomManual($event.deltaY < 0 ? 1.2 : 0.8)" @mousedown="handleMouseDown"
+            @mousemove="handleMouseMove" @mouseup="handleMouseUp" @mouseleave="handleMouseLeave"
+            @touchstart.prevent="handleTouchStart" @touchmove.prevent="handleTouchMove"
+            @touchend="handleTouchEnd"></canvas>
+          <div class="image-controls-deatel">
+            <button class="building-btn" @click="showBuilding = true">
+              <i class="fa-solid fa-city"></i>
+              عرض تفاصيل
+            </button>
+          </div>
+          <div class="image-controls">
+            <button class="image-btn" @click="zoomIn">
+              <i class="fa-solid fa-plus"></i>
+            </button>
+
+            <button class="image-btn" @click="zoomOut">
+              <i class="fa-solid fa-minus"></i>
+            </button>
+            <button class="image-btn" @click="resetZoom">
+              <i class="fa-solid fa-rotate-right"></i>
+            </button>
+          </div>
+        </div>
+<div v-if="active" class="modal">
+  <h2>{{ active.room }}</h2>
+  <ul>
+    <li>الطابق: {{ active.floor }}</li>
+    <li>المساحة: {{ active.area }} م²</li>
+    <li>عدد الغرف: {{ active.rooms }}</li>
+    {% comment %} <li>الحالة: {{ active.available ? 'متاح' : 'غير متاح' }}</li> {% endcomment %}
+    <li>السعر: ر.س {{ active.price }}</li>
+  </ul>
+  <button @click="active = null">إغلاق</button>
+</div>
+
+      <!-- سايدبار -->
+      <aside :class="['sidebar', sidebarOpen ? 'open' : 'closed']" dir="rtl">
+        <div class="logo">
+          <h1>قائمة الشقق</h1>
+        </div>
+        <div class="cards">
+
+          
+          <!-- هون تكرار تفاصيل الشقق  -->
+          <div v-for="apt in apartments" :key="apt.id" class="story-card">
+            <div class="story-header">
+              <div class="story-icon">
+                <i class="fa-solid fa-building"></i>
+              </div>
+              <div class="story-title">شقة رقم {{ apt.id }}</div>
+            </div>
+
+            <ul class="apt-info">
+              <li>
+                <i class="fa-solid fa-layer-group"></i> الطابق: {{ apt.floor
+                }}
+              </li>
+              <li>
+                <i class="fa-solid fa-ruler-combined"></i> المساحة: {{
+                apt.area_m2 }} م²
+              </li>
+              <li>
+                <i class="fa-solid fa-door-open"></i> الغرف: {{ apt.rooms_count }}
+              </li>
+              <li>
+                <i class="fa-solid"
+                  :class="apt.available ? 'fa-circle-check text-available' : 'fa-circle-xmark text-unavailable'"></i>
+                {% comment %} الحالة: {{ apt.status ? 'متاح' : 'غير متاح' }} {% endcomment %}
+              </li>
+              <li>
+                <i class="fa-solid fa-dollar-sign"></i> السعر: {{ apt.price }}
+                ر.س
+              </li>
+            </ul>
+          </div>
+          {{ apartments|json_script:"apartments-data" }} 
+        </div>
+      </aside>
+      <!-- هون تفاصيل المبنى  -->
+
+
+
+
+
+      <!-- <transition name="building-fade-slide">
+        <div  class="building-details">
+          <button class="close-building">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+          <h2></h2>
+          <p class="desc"></p>
+          <div class="info">
+            <p>
+              <i class="fa-solid fa-map-marker-alt"></i> العنوان:
+            </p>
+            <p>
+              <i class="fa-solid fa-flag"></i> البلد: 
+            </p>
+            <p>
+              <i class="fa-solid fa-city"></i> المدينة: 
+            </p>
+          </div>
+        </div>
+      </transition> -->
+
+
+
+
+
+      <button class="toggle-btn" @click="sidebarOpen = !sidebarOpen" :class="{ 'shifted': sidebarOpen }">
+        <i class="fa-solid" :class="sidebarOpen ? 'fa-chevron-right' : 'fa-chevron-left'"></i>
+      </button>
+    </div>
+  </div>
+  <script src="{% static 'js/ScriptsProjects.js' %}"></script>
+</body>
+
+</html>

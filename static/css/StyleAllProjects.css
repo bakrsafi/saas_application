@@ -1,0 +1,81 @@
+    html,
+    body {
+      height: 100%;
+      /* حتى يملأ الارتفاع كامل المتصفح */
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+    }
+
+
+    footer {
+      margin-top: auto;
+      /* يدفع الفوتر للأسفل تلقائياً */
+    }
+    .filter-bar {
+      background: var(--bg-color);
+      padding: 24px;
+      margin: 40px auto;
+      border-radius: 16px;
+      width: min(95%, 900px);
+      direction: rtl;
+      /* دعم العربية */
+      box-shadow: var(--shadow);
+      border: 1px solid rgba(0, 0, 0, 0.05);
+      z-index: 2;
+    }
+
+    .filter-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 18px;
+      justify-content: center;
+    }
+
+
+    .filter-input,
+    .filter-select {
+      flex: 1 1 260px;
+      padding: 14px 18px;
+      border: 1px solid var(--accent-color-light-blue);
+      border-radius: 12px;
+      font-size: 1rem;
+      color: var(--darker-text-color);
+      background: #fff;
+      transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    }
+
+
+    .filter-input::placeholder {
+      color: var(--secondary-text-color);
+    }
+
+    .filter-input:focus,
+    .filter-select:focus {
+      border-color: var(--accent-gradient-end);
+      box-shadow: 0 0 0 3px rgba(33, 147, 176, 0.25);
+      outline: none;
+    }
+
+    /* منسدل بسيط */
+    .filter-select {
+      background: #fff url("data:image/svg+xml;utf8,<svg fill='%235d6d7e' height='12' viewBox='0 0 24 24' width='12' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/></svg>") no-repeat left 1rem center;
+      background-size: 12px;
+      padding-left: 2.5rem;
+      /* ⬅️ مساحة إضافية للسهم */
+      padding-right: 1rem;
+      border: 1px solid var(--accent-color-light-blue);
+      border-radius: 12px;
+      font-size: 1rem;
+      color: var(--darker-text-color);
+      appearance: none;
+      /* لإخفاء السهم الافتراضي */
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      cursor: pointer;
+      transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .filter-select option {
+      color: var(--darker-text-color);
+    }
